@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LadinOS Kernel</title>
+    <style>
+        /* 全局样式：极简、高对比度 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        body {
+            background-color: #fff;
+            color: #333;
+            padding-top: 40px; /* 给顶部导航留空间 */
+        }
+
+        /* 顶部固定导航：仿Linux Kernel官网 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #000;
+            color: #fff;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+        }
+        .top-nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 5px 0;
+        }
+        .top-nav a:hover {
+            text-decoration: underline;
+        }
+        .top-nav .logo {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* 主容器：左侧导航 + 右侧内容 */
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            gap: 30px;
+        }
+
+        /* 左侧文档导航：固定宽度，类似Kernel官网的文档索引 */
+        .sidebar {
+            width: 220px;
+            flex-shrink: 0;
+        }
+        .sidebar h3 {
+            font-size: 15px;
+            margin: 15px 0 8px;
+            color: #000;
+        }
+        .sidebar ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+        .sidebar li {
+            margin: 5px 0;
+        }
+        .sidebar a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        /* 右侧内容区：技术文档风格 */
+        .content {
+            flex-grow: 1;
+            max-width: 800px;
+        }
+        .content h1 {
+            font-size: 24px;
+            margin: 0 0 20px;
+            color: #000;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+        .content h2 {
+            font-size: 18px;
+            margin: 25px 0 15px;
+            color: #000;
+        }
+        .content p {
+            margin-bottom: 15px;
+        }
+        .content ul, .content ol {
+            margin: 15px 0 15px 30px;
+        }
+        .content li {
+            margin-bottom: 5px;
+        }
+        .content a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        .content a:hover {
+            text-decoration: underline;
+        }
+
+        /* 版本信息块：突出显示当前版本 */
+        .version-box {
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .version-box h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #000;
+        }
+
+        /* 页脚：简洁版权信息 */
+        .footer {
+            border-top: 1px solid #ccc;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 13px;
+        }
+
+        /* 响应式调整：小屏幕合并布局 */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部固定导航：仿Linux Kernel官网的黑色导航栏 -->
+    <div class="top-nav">
+        <a href="#" class="logo">LadinOS Kernel</a>

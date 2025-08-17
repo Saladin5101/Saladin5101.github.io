@@ -1,15 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>退订成功</title>
-  <style>
-    body { font-family: Arial; text-align: center; padding: 50px; }
-    h1 { color: #ff6600; } /* 橙色标题，可改色 */
-    p { color: #666; }     /* 灰色描述 */
-  </style>
-</head>
-<body>
-  <h1>已成功退订 GRUB 编译通知</h1>
-  <p>若想重新订阅，可访问 <a href="https://github.com/Saladin5101/grub">项目GitHub页面</a> ❤️</p>
-</body>
-</html>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mailing List Unsubscribe - LadinOS Kernel</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        /* 保持与主站一致的极简风格 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        body {
+            background-color: #fff;
+            color: #333;
+            padding-top: 40px;
+        }
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: #000;
+            color: #fff;
+            padding: 8px 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+        }
+        .top-nav a {
+            color: #fff;
+            text-decoration: none;
+        }
+        .top-nav a:hover {
+            text-decoration: underline;
+        }
+        .top-nav .logo {
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .content h1 {
+            font-size: 24px;
+            margin: 0 0 20px;
+            color: #000;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+        .content p {
+            margin-bottom: 15px;
+        }
+        .form-group {
