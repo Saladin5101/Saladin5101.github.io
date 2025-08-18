@@ -1,66 +1,120 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mailing List Unsubscribe - LadinOS Kernel</title>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <title>邮件退订 - LadinOS</title>
     <style>
-        /* 保持与主站一致的极简风格 */
+        /* 复用首页样式，保持统一 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'DejaVu Sans', Arial, sans-serif;
-            font-size: 14px;
-            line-height: 1.5;
+            font-family: "Ubuntu", sans-serif;
         }
         body {
-            background-color: #fff;
+            background-color: #f5f5f5;
             color: #333;
-            padding-top: 40px;
         }
-        .top-nav {
-            position: fixed;
+        .navbar {
+            position: sticky;
             top: 0;
-            left: 0;
-            right: 0;
-            background-color: #000;
-            color: #fff;
-            padding: 8px 20px;
+            background: #fff;
+            padding: 12px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
-            gap: 20px;
-            z-index: 100;
+            justify-content: space-between;
         }
-        .top-nav a {
-            color: #fff;
+        .navbar .logo {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2E93E0;
             text-decoration: none;
         }
-        .top-nav a:hover {
-            text-decoration: underline;
+        .navbar nav a {
+            margin-left: 20px;
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s;
         }
-        .top-nav .logo {
-            font-weight: bold;
-            font-size: 16px;
+        .navbar nav a:hover {
+            color: #2E93E0;
         }
         .container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 0 20px;
         }
         .content {
-            max-width: 600px;
-            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            margin: 40px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
         .content h1 {
-            font-size: 24px;
-            margin: 0 0 20px;
-            color: #000;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #2E93E0;
         }
         .content p {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            color: #666;
         }
-        .form-group {
+        /* 表单 iframe 自适应 */
+        .form-iframe {
+            width: 100%;
+            min-height: 600px;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #666;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航（与首页一致） -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">LadinOS</a>
+            <nav>
+                <a href="index.html#docs">文档</a>
+                <a href="index.html#download">下载</a>
+                <a href="index.html#community">社区</a>
+                <a href="unsubscribe.html">邮件退订</a>
+            </nav>
+        </div>
+    </nav>
+
+    <!-- 退订内容区 -->
+    <div class="container">
+        <div class="content">
+            <h1>邮件订阅管理</h1>
+            <p>通过Microsoft表单调整你的邮件订阅偏好，支持退订、切换摘要模式等操作。透过退订反馈表单对我们的邮件提供反馈</p>
+            
+            <!-- 嵌入 Google/Microsoft 表单（替换 src 为你的实际链接） -->
+            <!-- Google Forms 示例：需确保表单允许 iframe 嵌入 -->
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSepGVhwiKsoH54sP3Onc9l2bxmhplywsi62HdvJHHl41H3hDA/viewform?embedded=true" width="640" height="1165" frameborder="0" marginheight="0" marginwidth="0">正在加载…</iframe>
+            
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 LadinOS 开发团队 · 遵循 GPLv3 协议发布</p>
+            <p>联系我们：<a href="mailto:contact@ladinos.org" style="color:#2E93E0;">contact@ladinos.org</a></p>
+        </div>
+    </footer>
+</body>
+</html>
