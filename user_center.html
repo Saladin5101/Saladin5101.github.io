@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户中心 - LadinOS</title>
+    <!-- 验证相关元标签 -->
+    <meta name="cf-site-verification" content="YOUR_CLOUDFLARE_VERIFICATION_CODE">
+    <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE">
+    <!-- 引入验证SDK -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <style>
+        /* 复用全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Ubuntu", sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            padding: 12px 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 999;
+        }
+        .navbar .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar .logo {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #FFA500;
+            text-decoration: none;
+        }
+        .navbar nav a {
+            margin-left: 20px;
+            color: #333;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .navbar nav a:hover {
+            color: #FFA500;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 50px;
+        }
+        .protection-notice {
+            margin: 15px 0 5px;
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+        .protection-notice a {
+            color: #2E93E0;
+            text-decoration: underline;
+        }
+        .footer a {
+            color: #2E93E0;
+            text-decoration: none;
+        }
+
+        /* 验证样式 */
+        #content { display: none; }
+        .verify-box { 
+            text-align: center; 
+            padding: 50px 20px; 
+        }
+
+        /* 用户中心样式 */
+        .user-center {
+            background: #fff;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        .user-center h1 {
+            font-size: 1.8em;
+            color: #2E93E0;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* 标签切换样式 */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 25px;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .tab.active {
+            border-bottom-color: #2E93E0;
+            color: #2E93E0;
+            font-weight: 500;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1em;
+            transition: border 0.3s;
+        }
+        .form-control:focus {
+            border-color: #2E93E0;
+            outline: none;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: #2E93E0;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #1c7ed6;
+        }
+        .form-text {
+            margin-top: 5px;
+            font-size: 0.85em;
+            color: #666;
+        }
+        .form-text a {
+            color: #2E93E0;
+            text-decoration: none;
+        }
+        .form-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .user-center {
+                padding: 20px;
+                margin: 20px auto;
+            }
+            .tabs {
+                flex-direction: column;
+            }
+            .tab {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">LadinOS</a>
+            <nav>
+                <a href="index.html#docs">文档</a>
+                <a href="index.html#download">下载</a>
+                <a href="index.html#community">社区</a>
+                <a href="unsubscribe.html">邮件退订</a>
+                <a href="user-center.html" style="color:#FFA500;">用户中心</a>
+            </nav>
+        </div>
+    </nav>
+
+    <!-- 验证组件 -->
+    <div class="verify-box">
+        <p>请完成验证以访问页面...</p>
+        <div class="cf-turnstile" 
+             data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" 
+             data-callback="onVerifyPassed">
+        </div>
+    </div>
+
+    <!-- 页面内容 -->
+    <div id="content">
+        <div class="container">
+            <div class="user-center">
+                <h1>用户中心</h1>
+
+                <!-- 标签切换：订阅 / 登录 / 注册 -->
+                <div class="tabs">
+                    <div class="tab active" data-tab="subscribe">邮件订阅</div>
+                    <div class="tab" data-tab="login">登录</div>
+                    <div class="tab" data-tab="register">注册</div>
+                </div>
+
+                <!-- 订阅表单 -->
+                <div class="tab-content active" id="subscribe">
+                    <form id="subscribe-form">
+                        <div class="form-group">
+                            <label for="subscribe-email">邮箱地址</label>
+                            <input type="email" id="subscribe-email" class="form-control" placeholder="your@email.com" required>
+                            <div class="form-text">我们将发送系统更新、版本发布等信息（<a href="unsubscribe.html">可随时退订</a>）</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="subscribe-name">姓名（可选）</label>
+                            <input type="text" id="subscribe-name" class="form-control" placeholder="请输入您的姓名">
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" required> 我同意接收LadinOS相关邮件，并已阅读<a href="#" target="_blank">隐私政策</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn">确认订阅</button>
+                    </form>
+                </div>
+
+                <!-- 登录表单 -->
+                <div class="tab-content" id="login">
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email">邮箱地址</label>
+                            <input type="email" id="login-email" class="form-control" placeholder="your@email.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">密码</label>
+                            <input type="password" id="login-password" class="form-control" placeholder="请输入密码" required>
+                            <div class="form-text"><a href="#">忘记密码？</a></div>
+                        </div>
+                        <button type="submit" class="btn">登录</button>
+                        <div class="form-text" style="margin-top:15px; text-align:center;">
+                            还没有账号？<a href="#" class="switch-tab" data-target="register">立即注册</a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 注册表单 -->
+                <div class="tab-content" id="register">
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="register-email">邮箱地址</label>
+                            <input type="email" id="register-email" class="form-control" placeholder="your@email.com" required>
+                            <div class="form-text">将用于登录和接收验证邮件</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-username">用户名</label>
+                            <input type="text" id="register-username" class="form-control" placeholder="请设置用户名" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">密码</label>
+                            <input type="password" id="register-password" class="form-control" placeholder="至少8位，包含字母和数字" required>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" required> 我已阅读并同意<a href="#" target="_blank">用户协议</a>和<a href="#" target="_blank">隐私政策</a>
+                            </label>
+                        </div>
+                        <button type="submit" class="btn">注册账号</button>
+                        <div class="form-text" style="margin-top:15px; text-align:center;">
+                            已有账号？<a href="#" class="switch-tab" data-target="login">立即登录</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="protection-notice">
+                本站点受Cloudflare与Google reCAPTCHA保护，<br>
+                <a href="https://www.cloudflare.com/terms/" target="_blank">Cloudflare最终用户许可协议</a> | 
+                <a href="https://www.cloudflare.com/privacypolicy/" target="_blank">Cloudflare隐私协议</a> | 
+                <a href="https://policies.google.com/terms" target="_blank">Google reCAPTCHA最终用户许可协议</a> | 
+                <a href="https://policies.google.com/privacy" target="_blank">Google reCAPTCHA隐私协议</a>
+            </div>
+            <p>© 2020-2025 LadinOS 开发团队 · 源代码遵循 GPLv2 协议发布,网站代码遵从Apache License Version 2</p>
+            <p>联系我们：<a href="mailto:dev@saladin510-orangeyouhome-erath.online">dev@saladin510-orangeyouhome-erath.online</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // 验证通过后显示内容
+        function onVerifyPassed(token) {
+            document.querySelector('.verify-box').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+        }
+
+        // 标签切换逻辑
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // 移除所有激活状态
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                // 激活当前标签
+                tab.classList.add('active');
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // 表单内切换标签
+        document.querySelectorAll('.switch-tab').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetTab = link.getAttribute('data-target');
+                document.querySelector(`.tab[data-tab="${targetTab}"]`).click();
+            });
+        });
+
+        // 表单提交处理（仅前端示例，实际需后端处理）
+        document.getElementById('subscribe-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('订阅请求已提交！验证邮件已发送到您的邮箱~');
+            this.reset();
+        });
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('登录成功！即将跳转到用户中心~');
+        });
+
+        document.getElementById('register-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('注册成功！请查收验证邮件激活账号~');
+            document.querySelector('.tab[data-tab="login"]').click(); // 切换到登录页
+        });
+    </script>
+</body>
+</html>
