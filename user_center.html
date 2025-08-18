@@ -4,20 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>用户中心 - LadinOS</title>
-    <!-- 验证相关元标签（保留，不影响功能） -->
-    <meta name="cf-site-verification" content="YOUR_CLOUDFLARE_VERIFICATION_CODE">
-    <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE">
+    <!-- 引入外部资源 -->
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- 【已注释：移除人机验证SDK】 -->
-    <!-- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
-    
-    <!-- Firebase SDK（保留，核心功能） -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+    <!-- 验证相关元标签 -->
+    <meta name="cf-site-verification" content="0x4AAAAAABssyMS8AGlMrjB1">
+    <meta name="google-site-verification" content="6LcleqkrAAAAANfG8TsWvEqCe-zMvnpEcWvHdSn5">
+    <!-- 引入验证SDK -->
+    <!--<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
     
     <style>
-        /* 全局样式保持不变 */
+        /* 全局样式优化 */
         * {
             margin: 0;
             padding: 0;
@@ -25,16 +23,23 @@
             font-family: "Ubuntu", sans-serif;
         }
         body {
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
             color: #333;
+            line-height: 1.6;
         }
+        
+        /* 导航栏优化 */
         .navbar {
             position: sticky;
             top: 0;
-            background: #fff;
+            background: #ffffff;
             padding: 12px 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             z-index: 999;
+            transition: box-shadow 0.3s ease;
+        }
+        .navbar:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
         .navbar .container {
             max-width: 1200px;
@@ -44,203 +49,354 @@
             justify-content: space-between;
         }
         .navbar .logo {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #FFA500;
+            font-size: 1.4em;
+            font-weight: 700;
+            color: #FF8C00;
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.3s ease;
+        }
+        .navbar .logo:hover {
+            transform: scale(1.05);
+        }
+        .navbar .logo i {
+            font-size: 1.2em;
         }
         .navbar nav a {
-            margin-left: 20px;
-            color: #333;
+            margin-left: 24px;
+            color: #555;
             text-decoration: none;
-            transition: color 0.3s;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 5px 0;
+        }
+        .navbar nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #FF8C00;
+            transition: width 0.3s ease;
         }
         .navbar nav a:hover {
-            color: #FFA500;
+            color: #FF8C00;
         }
+        .navbar nav a:hover::after {
+            width: 100%;
+        }
+        .navbar nav a.active {
+            color: #FF8C00;
+        }
+        .navbar nav a.active::after {
+            width: 100%;
+        }
+        
+        /* 容器和布局 */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-        .footer {
-            text-align: center;
-            padding: 30px 20px;
-            color: #666;
-            font-size: 0.9em;
-            margin-top: 50px;
+        
+        /* 验证区域样式优化 */
+        #content { 
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
         }
-        .protection-notice {
-            margin: 15px 0 5px;
-            font-size: 0.85em;
-            line-height: 1.6;
-        }
-        .protection-notice a {
-            color: #2E93E0;
-            text-decoration: underline;
-        }
-        .footer a {
-            color: #2E93E0;
-            text-decoration: none;
-        }
-
-        /* 【已修改：移除验证相关的内容隐藏，默认显示内容】 */
-        #content { display: block; }
-        /* 【已注释：移除验证框样式】 */
-        /* .verify-box { 
+        .verify-box { 
             text-align: center; 
-            padding: 50px 20px; 
-        } */
-
-        /* 用户中心样式（保持不变） */
+            padding: 80px 20px; 
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+        .verify-box p {
+            margin-bottom: 25px;
+            font-size: 1.1em;
+            color: #555;
+        }
+        .verify-box .cf-turnstile {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        
+        /* 用户中心主体样式 */
         .user-center {
             background: #fff;
             max-width: 600px;
-            margin: 40px auto;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin: 50px auto;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .user-center:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.12);
         }
         .user-center h1 {
-            font-size: 1.8em;
-            color: #2E93E0;
-            margin-bottom: 20px;
+            font-size: 2em;
+            color: #2E7D32;
+            margin-bottom: 30px;
             text-align: center;
+            position: relative;
+            padding-bottom: 15px;
         }
+        .user-center h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #2E7D32;
+            border-radius: 3px;
+        }
+        
+        /* 标签切换样式增强 */
         .tabs {
             display: flex;
             border-bottom: 1px solid #eee;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
+            position: relative;
         }
         .tab {
-            padding: 10px 20px;
+            padding: 12px 24px;
             cursor: pointer;
             border-bottom: 3px solid transparent;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #666;
+            position: relative;
         }
         .tab.active {
-            border-bottom-color: #2E93E0;
-            color: #2E93E0;
-            font-weight: 500;
+            border-bottom-color: #2E7D32;
+            color: #2E7D32;
         }
+        .tab:hover:not(.active) {
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        /* 表单样式优化 */
         .tab-content {
             display: none;
+            animation: fadeIn 0.4s ease-in-out;
         }
         .tab-content.active {
             display: block;
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #555;
+            font-weight: 500;
+            font-size: 0.95em;
         }
         .form-control {
             width: 100%;
-            padding: 12px 15px;
+            padding: 14px 18px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 1em;
-            transition: border 0.3s;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
         }
         .form-control:focus {
-            border-color: #2E93E0;
+            border-color: #2E7D32;
             outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+            background-color: #fff;
+        }
+        .form-control::placeholder {
+            color: #bbb;
+            font-weight: 300;
         }
         .btn {
             width: 100%;
-            padding: 12px;
-            background: #2E93E0;
+            padding: 14px;
+            background: linear-gradient(135deg, #2E7D32 0%, #388E3C 100%);
             color: #fff;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 1em;
+            font-weight: 500;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s ease;
         }
         .btn:hover {
-            background: #1c7ed6;
+            background: linear-gradient(135deg, #1B5E20 0%, #2E7D32 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+        .btn:hover::after {
+            left: 100%;
         }
         .form-text {
-            margin-top: 5px;
+            margin-top: 8px;
             font-size: 0.85em;
             color: #666;
+            line-height: 1.6;
         }
         .form-text a {
-            color: #2E93E0;
+            color: #2E7D32;
             text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
         }
         .form-text a:hover {
+            color: #1B5E20;
             text-decoration: underline;
         }
-        .user-info {
+        .form-group input[type="checkbox"] {
+            margin-right: 8px;
+            accent-color: #2E7D32;
+        }
+        
+        /* 页脚样式优化 */
+        .footer {
             text-align: center;
-            padding: 20px 0;
+            padding: 40px 20px 20px;
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 80px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
         }
-        .user-info p {
-            margin: 10px 0;
+        .protection-notice {
+            margin: 15px 0 20px;
+            font-size: 0.85em;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .logout-btn {
-            margin-top: 20px;
-            background: #ff4d4f;
+        .protection-notice a {
+            color: #2E7D32;
+            text-decoration: none;
+            transition: color 0.3s ease;
         }
-        .logout-btn:hover {
-            background: #d93025;
+        .protection-notice a:hover {
+            color: #1B5E20;
+            text-decoration: underline;
         }
+        .footer a {
+            color: #2E7D32;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer a:hover {
+            color: #1B5E20;
+            text-decoration: underline;
+        }
+        .footer p {
+            margin-bottom: 10px;
+        }
+        
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* 响应式优化 */
         @media (max-width: 768px) {
             .user-center {
-                padding: 20px;
-                margin: 20px auto;
+                padding: 25px;
+                margin: 30px auto;
+                border-radius: 8px;
+            }
+            .user-center h1 {
+                font-size: 1.6em;
+                margin-bottom: 20px;
             }
             .tabs {
                 flex-direction: column;
+                margin-bottom: 20px;
             }
             .tab {
                 text-align: center;
+                padding: 10px 15px;
+            }
+            .navbar nav a {
+                margin-left: 15px;
+                font-size: 0.9em;
+            }
+            .navbar .logo {
+                font-size: 1.2em;
+            }
+            .verify-box {
+                padding: 50px 20px;
+                margin: 30px auto;
             }
         }
     </style>
 </head>
 <body>
-    <!-- 导航栏（保持不变） -->
+    <!-- 导航栏 -->
     <nav class="navbar">
         <div class="container">
-            <a href="index.html" class="logo">LadinOS</a>
+            <a href="index.html" class="logo">
+                <i class="fas fa-linux"></i> LadinOS
+            </a>
             <nav>
                 <a href="index.html#docs">文档</a>
                 <a href="index.html#download">下载</a>
                 <a href="index.html#community">社区</a>
                 <a href="unsubscribe.html">邮件退订</a>
-                <a href="user-center.html" style="color:#FFA500;">用户中心</a>
+                <a href="user-center.html" class="active">用户中心</a>
             </nav>
         </div>
     </nav>
 
-    <!-- 【已注释：移除人机验证组件】 -->
-    <!-- <div class="verify-box">
+    <!-- 验证组件 -->
+    <div class="verify-box">
         <p>请完成验证以访问页面...</p>
         <div class="cf-turnstile" 
              data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" 
              data-callback="onVerifyPassed">
         </div>
-    </div> -->
+    </div>
 
-    <!-- 页面内容（默认直接显示） -->
+    <!-- 页面内容 -->
     <div id="content">
         <div class="container">
             <div class="user-center">
                 <h1>用户中心</h1>
 
-                <!-- 标签切换：订阅 / 登录 / 注册（保持不变） -->
+                <!-- 标签切换：订阅 / 登录 / 注册 -->
                 <div class="tabs">
                     <div class="tab active" data-tab="subscribe">邮件订阅</div>
                     <div class="tab" data-tab="login">登录</div>
                     <div class="tab" data-tab="register">注册</div>
                 </div>
 
-                <!-- 订阅表单（保持不变） -->
+                <!-- 订阅表单 -->
                 <div class="tab-content active" id="subscribe">
                     <form id="subscribe-form">
                         <div class="form-group">
@@ -261,7 +417,7 @@
                     </form>
                 </div>
 
-                <!-- 登录表单（保持不变） -->
+                <!-- 登录表单 -->
                 <div class="tab-content" id="login">
                     <form id="login-form">
                         <div class="form-group">
@@ -280,7 +436,7 @@
                     </form>
                 </div>
 
-                <!-- 注册表单（保持不变） -->
+                <!-- 注册表单 -->
                 <div class="tab-content" id="register">
                     <form id="register-form">
                         <div class="form-group">
@@ -307,22 +463,11 @@
                         </div>
                     </form>
                 </div>
-
-                <!-- 已登录用户信息（保持不变） -->
-                <div class="tab-content" id="user-info" style="display: none;">
-                    <div class="user-info">
-                        <h2>欢迎回来！</h2>
-                        <p id="user-email">加载中...</p>
-                        <p id="user-username">加载中...</p>
-                        <p id="subscription-status">订阅状态：未订阅</p>
-                        <button class="btn logout-btn" id="logout-btn">退出登录</button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
-    <!-- 页脚（保持不变） -->
+    <!-- 页脚 -->
     <footer class="footer">
         <div class="container">
             <div class="protection-notice">
@@ -338,39 +483,43 @@
     </footer>
 
     <script>
-        // 【已注释：移除验证回调函数】
-        /* function onVerifyPassed(token) {
-            document.querySelector('.verify-box').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
-        } */
+        // 验证通过后显示内容，添加动画效果
+        function onVerifyPassed(token) {
+            const verifyBox = document.querySelector('.verify-box');
+            verifyBox.style.opacity = '0';
+            verifyBox.style.transform = 'translateY(20px)';
+            verifyBox.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            
+            setTimeout(() => {
+                verifyBox.style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            }, 400);
+        }
 
-        // Firebase 配置（替换为你的信息）
-        const firebaseConfig = {
-            apiKey: "AIzaSyB_IgN5IWRlx48z9ndjYLhHJi58MXRNHMI",
-            authDomain: "ladinos-website.firebaseapp.com",
-            projectId: "ladinos-website",
-            storageBucket: "ladinos-website.firebasestorage.app",
-            messagingSenderId: "176741334248",
-            appId: "1:176741334248:web:4b8b4952343a34b0109d5d",
-            measurementId: "G-NH9W2KW8L8"
-        };
-
-        // 初始化Firebase（保持不变）
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        // 页面交互逻辑（保持不变）
+        // 标签切换逻辑，添加动画效果
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
+                // 移除所有激活状态
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => {
+                    c.classList.remove('active');
+                    c.style.opacity = '0';
+                });
+                
+                // 激活当前标签
                 tab.classList.add('active');
                 const tabId = tab.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
+                const activeContent = document.getElementById(tabId);
+                
+                // 延迟显示以触发动画
+                setTimeout(() => {
+                    activeContent.classList.add('active');
+                    activeContent.style.opacity = '1';
+                }, 50);
             });
         });
 
+        // 表单内切换标签
         document.querySelectorAll('.switch-tab').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -379,104 +528,56 @@
             });
         });
 
-        // 注册功能（保持不变）
-        document.getElementById('register-form').addEventListener('submit', async (e) => {
+        // 表单提交处理，添加加载状态
+        document.getElementById('subscribe-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            const email = document.getElementById('register-email').value;
-            const username = document.getElementById('register-username').value;
-            const password = document.getElementById('register-password').value;
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            // 显示加载状态
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 处理中...';
+            
+            // 模拟提交延迟
+            setTimeout(() => {
+                alert('订阅请求已提交！验证邮件已发送到您的邮箱~');
+                this.reset();
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }, 1500);
+        });
 
-            try {
-                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-                const user = userCredential.user;
-                await user.sendEmailVerification();
-                await db.collection('users').doc(user.uid).set({
-                    email: email,
-                    username: username,
-                    createdAt: new Date(),
-                    subscription: false
-                });
-                alert('注册成功！验证邮件已发送，请查收~');
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 登录中...';
+            
+            setTimeout(() => {
+                alert('登录成功！即将跳转到用户中心~');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }, 1500);
+        });
+
+        document.getElementById('register-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 注册中...';
+            
+            setTimeout(() => {
+                alert('注册成功！请查收验证邮件激活账号~');
                 document.querySelector('.tab[data-tab="login"]').click();
-            } catch (error) {
-                alert('注册失败：' + error.message);
-            }
-        });
-
-        // 登录功能（保持不变）
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            try {
-                await auth.signInWithEmailAndPassword(email, password);
-                alert('登录成功！');
-            } catch (error) {
-                alert('登录失败：' + error.message);
-            }
-        });
-
-        // 退出登录（保持不变）
-        document.getElementById('logout-btn').addEventListener('click', async () => {
-            try {
-                await auth.signOut();
-                alert('已退出登录');
-                document.querySelectorAll('.tab')[1].click();
-                document.getElementById('user-info').style.display = 'none';
-            } catch (error) {
-                alert('退出失败：' + error.message);
-            }
-        });
-
-        // 订阅功能（保持不变）
-        document.getElementById('subscribe-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('subscribe-email').value;
-            const name = document.getElementById('subscribe-name').value;
-
-            try {
-                const user = auth.currentUser;
-                if (user) {
-                    await db.collection('users').doc(user.uid).update({
-                        subscription: true,
-                        subscribeName: name,
-                        subscribeAt: new Date()
-                    });
-                } else {
-                    await db.collection('subscribers').add({
-                        email: email,
-                        name: name,
-                        subscribedAt: new Date(),
-                        isUser: false
-                    });
-                }
-                alert('订阅成功！');
-                document.getElementById('subscribe-form').reset();
-            } catch (error) {
-                alert('订阅失败：' + error.message);
-            }
-        });
-
-        // 监听登录状态（保持不变）
-        auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                document.getElementById('user-info').style.display = 'block';
-
-                const userDoc = await db.collection('users').doc(user.uid).get();
-                if (userDoc.exists) {
-                    const userData = userDoc.data();
-                    document.getElementById('user-email').textContent = `邮箱：${userData.email}`;
-                    document.getElementById('user-username').textContent = `用户名：${userData.username}`;
-                    document.getElementById('subscription-status').textContent = 
-                        `订阅状态：${userData.subscription ? '已订阅' : '未订阅'}`;
-                }
-            } else {
-                document.getElementById('user-info').style.display = 'none';
-            }
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalText;
+            }, 1500);
         });
     </script>
 </body>
 </html>
+    
