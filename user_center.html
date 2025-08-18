@@ -4,13 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>用户中心 - LadinOS</title>
-    <!-- 验证相关元标签 -->
-    <meta name="cf-site-verification" content="0x4AAAAAABssyMS8AGlMrjB1">
-    <meta name="google-site-verification" content="6LcleqkrAAAAANfG8TsWvEqCe-zMvnpEcWvHdSn5">
-    <!-- 引入验证SDK -->
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <!-- 验证相关元标签（保留，不影响功能） -->
+    <meta name="cf-site-verification" content="YOUR_CLOUDFLARE_VERIFICATION_CODE">
+    <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_CODE">
+    
+    <!-- 【已注释：移除人机验证SDK】 -->
+    <!-- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
+    
+    <!-- Firebase SDK（保留，核心功能） -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+    
     <style>
-        /* 复用全局样式 */
+        /* 全局样式保持不变 */
         * {
             margin: 0;
             padding: 0;
@@ -77,14 +84,15 @@
             text-decoration: none;
         }
 
-        /* 验证样式 */
-        #content { display: none; }
-        .verify-box { 
+        /* 【已修改：移除验证相关的内容隐藏，默认显示内容】 */
+        #content { display: block; }
+        /* 【已注释：移除验证框样式】 */
+        /* .verify-box { 
             text-align: center; 
             padding: 50px 20px; 
-        }
+        } */
 
-        /* 用户中心样式 */
+        /* 用户中心样式（保持不变） */
         .user-center {
             background: #fff;
             max-width: 600px;
@@ -99,8 +107,6 @@
             margin-bottom: 20px;
             text-align: center;
         }
-
-        /* 标签切换样式 */
         .tabs {
             display: flex;
             border-bottom: 1px solid #eee;
@@ -123,8 +129,6 @@
         .tab-content.active {
             display: block;
         }
-
-        /* 表单样式 */
         .form-group {
             margin-bottom: 20px;
         }
@@ -171,8 +175,20 @@
         .form-text a:hover {
             text-decoration: underline;
         }
-
-        /* 响应式调整 */
+        .user-info {
+            text-align: center;
+            padding: 20px 0;
+        }
+        .user-info p {
+            margin: 10px 0;
+        }
+        .logout-btn {
+            margin-top: 20px;
+            background: #ff4d4f;
+        }
+        .logout-btn:hover {
+            background: #d93025;
+        }
         @media (max-width: 768px) {
             .user-center {
                 padding: 20px;
@@ -188,7 +204,7 @@
     </style>
 </head>
 <body>
-    <!-- 导航栏 -->
+    <!-- 导航栏（保持不变） -->
     <nav class="navbar">
         <div class="container">
             <a href="index.html" class="logo">LadinOS</a>
@@ -202,29 +218,29 @@
         </div>
     </nav>
 
-    <!-- 验证组件 -->
-    <div class="verify-box">
+    <!-- 【已注释：移除人机验证组件】 -->
+    <!-- <div class="verify-box">
         <p>请完成验证以访问页面...</p>
         <div class="cf-turnstile" 
              data-sitekey="YOUR_CLOUDFLARE_SITE_KEY" 
              data-callback="onVerifyPassed">
         </div>
-    </div>
+    </div> -->
 
-    <!-- 页面内容 -->
+    <!-- 页面内容（默认直接显示） -->
     <div id="content">
         <div class="container">
             <div class="user-center">
                 <h1>用户中心</h1>
 
-                <!-- 标签切换：订阅 / 登录 / 注册 -->
+                <!-- 标签切换：订阅 / 登录 / 注册（保持不变） -->
                 <div class="tabs">
                     <div class="tab active" data-tab="subscribe">邮件订阅</div>
                     <div class="tab" data-tab="login">登录</div>
                     <div class="tab" data-tab="register">注册</div>
                 </div>
 
-                <!-- 订阅表单 -->
+                <!-- 订阅表单（保持不变） -->
                 <div class="tab-content active" id="subscribe">
                     <form id="subscribe-form">
                         <div class="form-group">
@@ -245,7 +261,7 @@
                     </form>
                 </div>
 
-                <!-- 登录表单 -->
+                <!-- 登录表单（保持不变） -->
                 <div class="tab-content" id="login">
                     <form id="login-form">
                         <div class="form-group">
@@ -264,7 +280,7 @@
                     </form>
                 </div>
 
-                <!-- 注册表单 -->
+                <!-- 注册表单（保持不变） -->
                 <div class="tab-content" id="register">
                     <form id="register-form">
                         <div class="form-group">
@@ -291,11 +307,22 @@
                         </div>
                     </form>
                 </div>
+
+                <!-- 已登录用户信息（保持不变） -->
+                <div class="tab-content" id="user-info" style="display: none;">
+                    <div class="user-info">
+                        <h2>欢迎回来！</h2>
+                        <p id="user-email">加载中...</p>
+                        <p id="user-username">加载中...</p>
+                        <p id="subscription-status">订阅状态：未订阅</p>
+                        <button class="btn logout-btn" id="logout-btn">退出登录</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 页脚 -->
+    <!-- 页脚（保持不变） -->
     <footer class="footer">
         <div class="container">
             <div class="protection-notice">
@@ -311,26 +338,39 @@
     </footer>
 
     <script>
-        // 验证通过后显示内容
-        function onVerifyPassed(token) {
+        // 【已注释：移除验证回调函数】
+        /* function onVerifyPassed(token) {
             document.querySelector('.verify-box').style.display = 'none';
             document.getElementById('content').style.display = 'block';
-        }
+        } */
 
-        // 标签切换逻辑
+        // Firebase 配置（替换为你的信息）
+        const firebaseConfig = {
+            apiKey: "AIzaSyB_IgN5IWRlx48z9ndjYLhHJi58MXRNHMI",
+            authDomain: "ladinos-website.firebaseapp.com",
+            projectId: "ladinos-website",
+            storageBucket: "ladinos-website.firebasestorage.app",
+            messagingSenderId: "176741334248",
+            appId: "1:176741334248:web:4b8b4952343a34b0109d5d",
+            measurementId: "G-NH9W2KW8L8"
+        };
+
+        // 初始化Firebase（保持不变）
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // 页面交互逻辑（保持不变）
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
-                // 移除所有激活状态
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                // 激活当前标签
                 tab.classList.add('active');
                 const tabId = tab.getAttribute('data-tab');
                 document.getElementById(tabId).classList.add('active');
             });
         });
 
-        // 表单内切换标签
         document.querySelectorAll('.switch-tab').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -339,22 +379,103 @@
             });
         });
 
-        // 表单提交处理（仅前端示例，实际需后端处理）
-        document.getElementById('subscribe-form').addEventListener('submit', (e) => {
+        // 注册功能（保持不变）
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            alert('订阅请求已提交！验证邮件已发送到您的邮箱~');
-            this.reset();
+            const email = document.getElementById('register-email').value;
+            const username = document.getElementById('register-username').value;
+            const password = document.getElementById('register-password').value;
+
+            try {
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
+                await user.sendEmailVerification();
+                await db.collection('users').doc(user.uid).set({
+                    email: email,
+                    username: username,
+                    createdAt: new Date(),
+                    subscription: false
+                });
+                alert('注册成功！验证邮件已发送，请查收~');
+                document.querySelector('.tab[data-tab="login"]').click();
+            } catch (error) {
+                alert('注册失败：' + error.message);
+            }
         });
 
-        document.getElementById('login-form').addEventListener('submit', (e) => {
+        // 登录功能（保持不变）
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            alert('登录成功！即将跳转到用户中心~');
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                alert('登录成功！');
+            } catch (error) {
+                alert('登录失败：' + error.message);
+            }
         });
 
-        document.getElementById('register-form').addEventListener('submit', (e) => {
+        // 退出登录（保持不变）
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                alert('已退出登录');
+                document.querySelectorAll('.tab')[1].click();
+                document.getElementById('user-info').style.display = 'none';
+            } catch (error) {
+                alert('退出失败：' + error.message);
+            }
+        });
+
+        // 订阅功能（保持不变）
+        document.getElementById('subscribe-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            alert('注册成功！请查收验证邮件激活账号~');
-            document.querySelector('.tab[data-tab="login"]').click(); // 切换到登录页
+            const email = document.getElementById('subscribe-email').value;
+            const name = document.getElementById('subscribe-name').value;
+
+            try {
+                const user = auth.currentUser;
+                if (user) {
+                    await db.collection('users').doc(user.uid).update({
+                        subscription: true,
+                        subscribeName: name,
+                        subscribeAt: new Date()
+                    });
+                } else {
+                    await db.collection('subscribers').add({
+                        email: email,
+                        name: name,
+                        subscribedAt: new Date(),
+                        isUser: false
+                    });
+                }
+                alert('订阅成功！');
+                document.getElementById('subscribe-form').reset();
+            } catch (error) {
+                alert('订阅失败：' + error.message);
+            }
+        });
+
+        // 监听登录状态（保持不变）
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById('user-info').style.display = 'block';
+
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    document.getElementById('user-email').textContent = `邮箱：${userData.email}`;
+                    document.getElementById('user-username').textContent = `用户名：${userData.username}`;
+                    document.getElementById('subscription-status').textContent = 
+                        `订阅状态：${userData.subscription ? '已订阅' : '未订阅'}`;
+                }
+            } else {
+                document.getElementById('user-info').style.display = 'none';
+            }
         });
     </script>
 </body>
